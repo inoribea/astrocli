@@ -1,18 +1,14 @@
 [tool.poetry]
-name = "astroquery_cli"
-version = "1.0"
-description = "CLI for astroquery modules with autocompletion."
+name = "aqc-cli"
+version = "1.0.0"
+description = "CLI for astroquery modules with autocompletion and multi-language support."
 authors = ["inoribea <inoribea@outlook.com>"]
+license = "BSD-3-Clause"
 readme = "README.md"
 
-packages = [
-  { include = "astroquery_cli" }
-]
+packages = [{include = "astroquery_cli"}]
 
-include = [
-    { path = "locales/*/LC_MESSAGES/messages.mo", format = "sdist" },
-    { path = "locales/*/LC_MESSAGES/messages.mo", format = "wheel" }
-]
+include = [{path = "locales/*/LC_MESSAGES/messages.mo"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11"
@@ -29,9 +25,16 @@ pytest = "^7.4.2"
 snakeviz = "^2.2.0"
 polib = "^1.2.0"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.urls]
+Homepage = "https://github.com/inoribea/astroquery-cli"
+Documentation = "https://github.com/inoribea/astroquery-cli#readme"
+Repository = "https://github.com/inoribea/astroquery-cli"
+Issues = "https://github.com/inoribea/astroquery-cli/issues"
 
 [tool.poetry.scripts]
 aqc = "astroquery_cli.main:cli"
+astrocli = "astroquery_cli.main:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
