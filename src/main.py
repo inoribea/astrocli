@@ -246,107 +246,111 @@ def setup_subcommands():
             "Config Content": config_lang if config_lang else "None",
         }
 
-    debug_manager.print_config_info(config_info)
-    debug_manager.print_environment_info()
-    debug_manager.print_system_info()
+        debug_manager.print_config_info(config_info)
+        debug_manager.print_environment_info()
+        debug_manager.print_system_info()
 
-    # Re-initialize translation in callback to handle runtime language changes
-    i18n.init_translation(selected_lang)
-    builtins._ = i18n._  # Update builtins._ after re-initialization
+        # Re-initialize translation in callback to handle runtime language changes
+        i18n.init_translation(selected_lang)
+        builtins._ = i18n._  # Update builtins._ after re-initialization
 
-    # Print translation information
-    translation_info = {
-        "Language Code": selected_lang,
-        "Locale Directory": i18n.LOCALE_BASE_DIR,
-        "Text Domain": i18n.TEXT_DOMAIN,
-        "Current Language": i18n.translator_instance.get_current_language(),
-    }
-    debug_manager.print_translation_info(selected_lang, translation_info)
+        # Print translation information
+        translation_info = {
+            "Language Code": selected_lang,
+            "Locale Directory": i18n.LOCALE_BASE_DIR,
+            "Text Domain": i18n.TEXT_DOMAIN,
+            "Current Language": i18n.translator_instance.get_current_language(),
+        }
+        debug_manager.print_translation_info(selected_lang, translation_info)
 
-    # Try to inject our translations into Click's gettext domain
-    try:
-        import gettext
-        import click
+        # Try to inject our translations into Click's gettext domain
+        try:
+            import gettext
+            import click
 
-        _ = i18n.get_translator()
+            _ = i18n.get_translator()
 
-        def custom_gettext(message):
-            if debug:
-                console.print(
-                    f"[dim cyan]DEBUG: Click requesting translation for: '{message}'[/dim cyan]"
-                )
-
-            translated = _(message)
-
-            if debug:
-                console.print(
-                    f"[dim cyan]DEBUG: Our translation result: '{translated}'[/dim cyan]"
-                )
-
-            if translated != message:
+            def custom_gettext(message):
                 if debug:
                     console.print(
-                        f"[dim green]DEBUG: Using our translation: '{translated}'[/dim green]"
+                        f"[dim cyan]DEBUG: Click requesting translation for: '{message}'[/dim cyan]"
                     )
-                return translated
+
+                translated = _(message)
+
+                if debug:
+                    console.print(
+                        f"[dim cyan]DEBUG: Our translation result: '{translated}'[/dim cyan]"
+                    )
+
+                if translated != message:
+                    if debug:
+                        console.print(
+                            f"[dim green]DEBUG: Using our translation: '{translated}'[/dim green]"
+                        )
+                    return translated
+                if debug:
+                    console.print(
+                        f"[dim yellow]DEBUG: Using original message: '{message}'[/dim yellow]"
+                    )
+                return message
+
+            click.core._ = custom_gettext
             if debug:
                 console.print(
-                    f"[dim yellow]DEBUG: Using original message: '{message}'[/dim yellow]"
+                    "[dim green]DEBUG: Replaced Click's gettext function[/dim green]"
                 )
-            return message
 
-        click.core._ = custom_gettext
-        if debug:
-            console.print(
-                "[dim green]DEBUG: Replaced Click's gettext function[/dim green]"
+        except Exception as e:
+            if debug:
+                console.print(
+                    f"[dim red]DEBUG: Failed to replace Click's gettext function: {e}[/dim red]"
+                )
+
+        if ping:
+            from src.options.ping import run_ping
+
+            run_ping()
+            raise typer.Exit()
+        if field:
+            from src.options.field import run_field
+
+            run_field()
+            raise typer.Exit()
+
+        # Dynamically modify the help text for completion commands
+        if hasattr(app, "registered_commands") and isinstance(
+            app.registered_commands, dict
+        ):
+            debug_manager.debug(
+                "Dynamically modifying help texts for completion commands."
             )
+            for command_name, command_obj in app.registered_commands.items():
+                original_help = command_obj.help
+                if command_name == "install-completion":
+                    command_obj.help = i18n._(
+                        "Install completion for the current shell."
+                    )
+                elif command_name == "show-completion":
+                    command_obj.help = i18n._(
+                        "Show completion for the current shell, to copy it or customize the installation."
+                    )
+                elif command_name == "help":
+                    command_obj.help = i18n._("Show this message and exit.")
 
-    except Exception as e:
-        if debug:
-            console.print(
-                f"[dim red]DEBUG: Failed to replace Click's gettext function: {e}[/dim red]"
-            )
+                if debug_manager.debug_enabled:
+                    debug_manager.debug(
+                        f"Command '{command_name}': Original help='{original_help}', New help='{command_obj.help}'"
+                    )
 
-    if ping:
-        from src.options.ping import run_ping
-
-        run_ping()
-        raise typer.Exit()
-    if field:
-        from src.options.field import run_field
-
-        run_field()
-        raise typer.Exit()
-
-    # Dynamically modify the help text for completion commands
-    if hasattr(app, "registered_commands") and isinstance(
-        app.registered_commands, dict
-    ):
-        debug_manager.debug("Dynamically modifying help texts for completion commands.")
-        for command_name, command_obj in app.registered_commands.items():
-            original_help = command_obj.help
-            if command_name == "install-completion":
-                command_obj.help = i18n._("Install completion for the current shell.")
-            elif command_name == "show-completion":
-                command_obj.help = i18n._(
-                    "Show completion for the current shell, to copy it or customize the installation."
-                )
-            elif command_name == "help":
-                command_obj.help = i18n._("Show this message and exit.")
-
-            if debug_manager.debug_enabled:
-                debug_manager.debug(
-                    f"Command '{command_name}': Original help='{original_help}', New help='{command_obj.help}'"
-                )
-
-    # If no subcommand is invoked and no explicit help is requested,
-    # display only the "Commands" section.
-    if ctx.invoked_subcommand is None and not any(
-        arg in ["-h", "--help"] for arg in sys.argv
-    ):
-        if not ping and not field:
-            # Capture the full help output by explicitly calling the app with --help
-            help_output_capture = StringIO()
+        # If no subcommand is invoked and no explicit help is requested,
+        # display only the "Commands" section.
+        if ctx.invoked_subcommand is None and not any(
+            arg in ["-h", "--help"] for arg in sys.argv
+        ):
+            if not ping and not field:
+                # Capture the full help output by explicitly calling the app with --help
+                help_output_capture = StringIO()
             with redirect_stdout(help_output_capture):
                 try:
                     # Call the app with --help to get the full help output
