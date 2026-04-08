@@ -1,6 +1,6 @@
 import typer
-from astroquery_cli import i18n
-from astroquery_cli.debug import debug_manager
+from src import i18n
+from src.debug import debug_manager
 
 def add_debug_options(callback_func):
     """Decorator to add common debug and verbose options to a command callback."""

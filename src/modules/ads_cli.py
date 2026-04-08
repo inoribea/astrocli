@@ -15,8 +15,8 @@ import os
 import re # Import re
 from io import StringIO # Import StringIO
 from contextlib import redirect_stdout # Import redirect_stdout
-from astroquery_cli.common_options import setup_debug_context # Import setup_debug_context
-from astroquery_cli.debug import debug # Import debug function
+from src.common_options import setup_debug_context # Import setup_debug_context
+from src.debug import debug # Import debug function
 
 def get_app():
     import builtins

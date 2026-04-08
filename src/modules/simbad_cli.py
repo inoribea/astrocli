@@ -4,8 +4,8 @@ import typer
 from astroquery.simbad import Simbad, SimbadClass
 from astropy.table import Table
 from rich.console import Console
-from astroquery_cli.utils import display_table, handle_astroquery_exception, common_output_options, save_table_to_file, add_common_fields, console
-from astroquery_cli.common_options import setup_debug_context
+from src.utils import display_table, handle_astroquery_exception, common_output_options, save_table_to_file, add_common_fields, console
+from src.common_options import setup_debug_context
 from ..i18n import get_translator
 from ..utils import global_keyboard_interrupt_handler
 import re # Import re

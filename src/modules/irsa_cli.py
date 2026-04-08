@@ -21,8 +21,8 @@ from ..utils import (
     global_keyboard_interrupt_handler
 )
 from ..i18n import get_translator
-from astroquery_cli.common_options import setup_debug_context # Added for dust
-from astroquery_cli.debug import debug # Added for dust
+from src.common_options import setup_debug_context # Added for dust
+from src.debug import debug # Added for dust
 
 def get_app():
     import builtins

@@ -56,18 +56,18 @@ import shutil  # Re-import shutil if needed for other parts
 # Suppress astroquery log messages globally (moved to __init__.py for earlier execution)
 # Monkey patch for astroquery.logger._init_log (moved to __init__.py for earlier execution)
 
-from astroquery_cli import config  # Import config first
+from src import config  # Import config first
 
 # Load configuration from ~/.aqc/config.ini
 config.load_config()
 
 # Force early translation initialization (will be re-initialized in callback)
-from astroquery_cli import i18n
+from src import i18n
 
 i18n.init_translation(i18n.INITIAL_LANG)
 builtins._ = i18n._
 
-from astroquery_cli.debug import debug_manager
+from src.debug import debug_manager
 
 
 def save_default_lang(lang):
@@ -241,7 +241,7 @@ def setup_subcommands():
         "Debug Mode": debug,
         "Verbose Mode": verbose or debug,
         "Selected Language": selected_lang,
-        "Config Path": config.CONFIG_FILE_PATH,  # Use the correct config path from astroquery_cli.config
+        "Config Path": config.CONFIG_FILE_PATH,  # Use the correct config path from src.config
         "Config File Exists": os.path.exists(config.CONFIG_FILE_PATH),
         "Config Content": config_lang if config_lang else "None",
     }
@@ -307,12 +307,12 @@ def setup_subcommands():
             )
 
     if ping:
-        from astroquery_cli.options.ping import run_ping
+        from src.options.ping import run_ping
 
         run_ping()
         raise typer.Exit()
     if field:
-        from astroquery_cli.options.field import run_field
+        from src.options.field import run_field
 
         run_field()
         raise typer.Exit()

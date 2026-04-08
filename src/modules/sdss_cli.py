@@ -15,8 +15,8 @@ from ..utils import (
 )
 import os
 import re # Keep re for other uses in the file
-from astroquery_cli.common_options import setup_debug_context
-from astroquery_cli.debug import debug
+from src.common_options import setup_debug_context
+from src.debug import debug
 
 def get_app(_: callable):
     app = typer.Typer(

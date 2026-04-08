@@ -15,8 +15,8 @@ from ..utils import (
 import re
 from io import StringIO
 from contextlib import redirect_stdout
-from astroquery_cli.common_options import setup_debug_context
-from astroquery_cli.debug import debug
+from src.common_options import setup_debug_context
+from src.debug import debug
 
 def get_app(_: callable):
     app = typer.Typer(
