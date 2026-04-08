@@ -1,5 +1,5 @@
 {
-  "name": "astrocli",
+  "name": "@inoribea/astrocli",
   "version": "1.4.0",
   "description": "Command-line interface for querying astronomical databases via astroquery",
   "bin": {

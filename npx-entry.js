@@ -63,7 +63,7 @@ function needInstall() {
     return true;
   }
 
-  const check = spawnSync(venvPython, ["-m", "pip", "show", "astrocli"], {
+  const check = spawnSync(venvPython, ["-m", "pip", "show", "inoribea-astrocli"], {
     stdio: "ignore",
   });
   return check.status !== 0;
@@ -74,18 +74,18 @@ function ensureCliInstalled() {
     return;
   }
 
-  log.info("正在安装/更新 astrocli 到本地虚拟环境……");
+  log.info("正在安装/更新 inoribea-astrocli 到本地虚拟环境……");
   const install = tryCommand(venvPython, [
     "-m",
     "pip",
     "install",
     "--upgrade",
     "pip",
-    "astrocli",
+    "inoribea-astrocli",
   ]);
 
   if (install.status !== 0) {
-    fail("安装 astrocli 失败，请检查网络或 PyPI 访问。");
+    fail("安装 inoribea-astrocli 失败，请检查网络或 PyPI 访问。");
   }
 }
 
