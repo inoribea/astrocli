@@ -61,30 +61,42 @@ def suggest_web_view(ctx: typer.Context, result_url: str, reason: str = ""):
 def parse_coordinates(ctx: typer.Context, coords_str: str) -> Optional[SkyCoord]:
     """
     Parses a coordinate string into an Astropy SkyCoord object.
-    Handles various common formats including decimal degrees and HMS/DMS.
+    Handles various common formats including decimal degrees, HMS/DMS, and object names.
     """
     if not coords_str:
         console.print("[bold red]Error: Coordinate string cannot be empty.[/bold red]")
         raise typer.Exit(code=1)
-    try:
-        if re.match(r"^\s*[\d\.\-+]+\s+[\d\.\-+]+\s*$", coords_str):
-            parts = coords_str.split()
-            if len(parts) == 2:
+
+    # Try parsing as "RA Dec" (two numbers)
+    if re.match(r"^\s*[\d\.\-+]+\s+[\d\.\-+]+\s*$", coords_str):
+        parts = coords_str.split()
+        if len(parts) == 2:
+            try:
                 return SkyCoord(
                     ra=float(parts[0]),
                     dec=float(parts[1]),
                     unit=(u.deg, u.deg),
                     frame="icrs",
                 )
+            except Exception:
+                pass
+
+    # Try parsing as object name (requires network)
+    try:
+        return SkyCoord.from_name(coords_str)
+    except Exception:
+        pass
+
+    # Try parsing as coordinate string
+    try:
         return SkyCoord(coords_str, frame="icrs")
     except Exception as e1:
-        # Do not exit here, just print error and return None
         console.print(
             f"[bold red]Error: Could not parse coordinates '{coords_str}'.[/bold red]"
         )
         console.print(f"[yellow]Details: {e1}[/yellow]")
         console.print(
-            f"[yellow]Ensure format is recognized by Astropy (e.g., '10.68h +41.26d', '10d30m0s 20d0m0s', '150.0 2.0' for deg).[/yellow]"
+            f"[yellow]Ensure format is recognized by Astropy (e.g., '10.68h +41.26d', '10d30m0s 20d0m0s', '150.0 2.0' for deg, or an object name like 'M31').[/yellow]"
         )
         return None
 
