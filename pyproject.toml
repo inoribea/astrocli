@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "aqc-cli"
-version = "1.3.0"
+name = "astrocli"
+version = "1.4.0"
 description = "CLI for astroquery modules with autocompletion and multi-language support."
 authors = ["inoribea <inoribea@outlook.com>"]
 license = "BSD-3-Clause"
@@ -32,8 +32,8 @@ Repository = "https://github.com/inoribea/astroquery-cli"
 Issues = "https://github.com/inoribea/astroquery-cli/issues"
 
 [tool.poetry.scripts]
-aqc = "src.main:cli"
 astrocli = "src.main:cli"
+aqc = "src.main:cli"
 
 [build-system]
 requires = ["poetry-core"]
