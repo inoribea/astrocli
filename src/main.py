@@ -172,55 +172,55 @@ def setup_subcommands():
     )
 
     @app.callback()
-def main_callback(
-    ctx: typer.Context,
-    lang: str = typer.Option(
-        None,
-        "-l",
-        "--lang",
-        help=builtins._(
-            "Set the language for output messages (e.g., 'en', 'zh'). Affects help texts and outputs."
+    def main_callback(
+        ctx: typer.Context,
+        lang: str = typer.Option(
+            None,
+            "-l",
+            "--lang",
+            help=builtins._(
+                "Set the language for output messages (e.g., 'en', 'zh'). Affects help texts and outputs."
+            ),
+            is_eager=True,
+            envvar="AQC_LANG",
+            show_default=False,
         ),
-        is_eager=True,
-        envvar="AQC_LANG",
-        show_default=False,
-    ),
-    ping: bool = typer.Option(
-        False,
-        "-p",
-        "--ping",
-        help=builtins._(
-            "Test connectivity to major services (only available at top-level command)."
+        ping: bool = typer.Option(
+            False,
+            "-p",
+            "--ping",
+            help=builtins._(
+                "Test connectivity to major services (only available at top-level command)."
+            ),
         ),
-    ),
-    field: bool = typer.Option(
-        False,
-        "-f",
-        "--field",
-        help=builtins._(
-            "Test field validity for modules (only available at top-level command)."
+        field: bool = typer.Option(
+            False,
+            "-f",
+            "--field",
+            help=builtins._(
+                "Test field validity for modules (only available at top-level command)."
+            ),
         ),
-    ),
-    debug: bool = typer.Option(
-        False,
-        "-d",
-        "--debug",
-        help=builtins._("Enable debug mode with verbose output."),
-        envvar="AQC_DEBUG",
-    ),
-    verbose: bool = typer.Option(
-        False, "-v", "--verbose", help=builtins._("Enable verbose output.")
-    ),
-):
-    _ = builtins._
-    ctx.obj = ctx.obj or {}
+        debug: bool = typer.Option(
+            False,
+            "-d",
+            "--debug",
+            help=builtins._("Enable debug mode with verbose output."),
+            envvar="AQC_DEBUG",
+        ),
+        verbose: bool = typer.Option(
+            False, "-v", "--verbose", help=builtins._("Enable verbose output.")
+        ),
+    ):
+        _ = builtins._
+        ctx.obj = ctx.obj or {}
 
-    # Initialize console for general use
-    console = Console()
+        # Initialize console for general use
+        console = Console()
 
-    # Set debug and verbose flags in context
-    ctx.obj["debug"] = debug
-    ctx.obj["verbose"] = verbose or debug
+        # Set debug and verbose flags in context
+        ctx.obj["debug"] = debug
+        ctx.obj["verbose"] = verbose or debug
 
     # Enable debug manager
     if debug:
