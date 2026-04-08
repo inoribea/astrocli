@@ -1,6 +1,6 @@
 {
   "name": "@inoribea/astrocli",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Command-line interface for querying astronomical databases via astroquery",
   "bin": {
     "astrocli": "./npx-entry.js",
