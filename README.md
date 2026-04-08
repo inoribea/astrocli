@@ -57,36 +57,78 @@ Query data from 17 different astronomical databases and services:
 
 ## 📦 Installation
 
-### Quick Start (via npx/pnpm)
+Astro CLI 提供多种安装方式，选择适合你的方式：
 
-Requires: Node.js ≥18 and Python 3.11+
+### 方式一：npm 全局安装（推荐）
 
 ```bash
-# Using pnpm (recommended)
-pnpm astrocli --help
+# 全局安装（需要 Node.js ≥18 和 Python 3.11+）
+npm install -g astroquery-cli
 
-# Using npx
-npx astrocli --help
+# 安装后可使用以下任一命令：
+astroquery-cli --help    # 完整命令
+aqc --help               # 短命令
+astrocli --help          # 别名命令
 
-# Example: Query SIMBAD for M31
-pnpm astrocli simbad object "M31"
+# 示例：查询 SIMBAD 中的 M31
+astrocli simbad object "M31"
 ```
 
-### Environment Variables
-
-- `AC_PYTHON` - Specify Python interpreter path
-- `AC_VENV_DIR` - Custom virtual environment cache directory (default: `~/.cache/astrocli`)
-- `AC_FORCE_INSTALL=1` - Force reinstall/upgrade Python dependencies
-- `AC_DEBUG` - Enable debug mode
-- `AC_LANG` - Set default language (en/zh/ja)
-
-### Install from Source
+### 方式二：npx/pnpm 直接运行
 
 ```bash
-git clone https://github.com/yourusername/astrocli.git
-cd astrocli
+# 使用 npx（无需安装）
+npx astroquery-cli --help
+
+# 使用 pnpm
+pnpm astroquery-cli --help
+
+# 示例
+npx astroquery-cli simbad object "M31"
+```
+
+### 方式三：PyPI 安装（Python 用户）
+
+```bash
+# 从 PyPI 安装 Python 包
+pip install aqc-cli
+
+# 安装后可使用命令：
+aqc --help
+astrocli --help
+```
+
+### 方式四：从源码安装
+
+```bash
+git clone https://github.com/inoribea/astroquery-cli.git
+cd astroquery-cli
 pip install -e .
 ```
+
+---
+
+### 📋 包名说明
+
+| 平台 | 包名 | 安装命令 |
+|------|------|---------|
+| **npm** | `astroquery-cli` | `npm install -g astroquery-cli` |
+| **PyPI** | `aqc-cli` | `pip install aqc-cli` |
+
+安装后，三个命令均可使用：
+- `astroquery-cli` - 完整命令名
+- `aqc` - 短命令（推荐）
+- `astrocli` - 别名命令
+
+---
+
+### 环境变量
+
+- `AC_PYTHON` - 指定 Python 解释器路径
+- `AC_VENV_DIR` - 自定义虚拟环境缓存目录（默认：`~/.cache/astrocli`）
+- `AC_FORCE_INSTALL=1` - 强制重新安装/升级 Python 依赖
+- `AC_DEBUG` - 启用调试模式
+- `AC_LANG` - 设置默认语言（en/zh/ja）
 
 ---
 

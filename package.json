@@ -1,7 +1,7 @@
 {
   "name": "astroquery-cli",
-  "version": "1.0.0",
-  "description": "npx-friendly wrapper for the astroquery-cli Python tool",
+  "version": "1.2.0",
+  "description": "Command-line interface for querying astronomical databases via astroquery",
   "bin": {
     "astroquery-cli": "./npx-entry.js",
     "aqc": "./npx-entry.js",
