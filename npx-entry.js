@@ -90,7 +90,7 @@ function ensureCliInstalled() {
 }
 
 function runCli() {
-  const execution = tryCommand(venvPython, ["-m", "astroquery_cli.main", ...args]);
+  const execution = tryCommand(venvPython, ["-m", "src.main", ...args]);
   process.exit(execution.status ?? 1);
 }
 

@@ -358,7 +358,7 @@ def main_callback(
             full_help_text = help_output_capture.getvalue()
 
             # Define aliases to filter out
-            aliases_to_filter = ["sim", "spl", "viz", "hea", "exo"]
+            aliases_to_filter = ["sim", "spl", "viz", "hea", "exo", "aav", "fer"]
 
             # Remove the gaia_message from the captured help text if it's present
             # This is to prevent duplication if Typer's help also includes it

@@ -1,16 +1,19 @@
 # Astro CLI 🚀
 
+**[中文文档](README_ZH.md)** | **English**
+
 > Your gateway to cosmos — Query astronomical data from command line
 
 [![License](https://img.shields.io/badge/License-BSD%203Clause-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![Astropy](https://img.shields.io/badge/astropy-6.0%2B-orange.svg)](https://www.astropy.org/)
+[![npm version](https://img.shields.io/npm/v/astroquery-cli.svg)](https://www.npmjs.com/package/astroquery-cli)
 
 ---
 
 ## ✨ What is Astro CLI?
 
-**Astro CLI** (working title: suggestions welcome!) is a modern command-line tool that provides quick access to multiple astronomical data services through the [Astroquery](https://astroquery.readthedocs.io/) library. It's designed for astronomers, researchers, and anyone who needs to query astronomical databases efficiently from the terminal.
+**Astro CLI** is a modern command-line tool that provides quick access to multiple astronomical data services through the [Astroquery](https://astroquery.readthedocs.io/) library. It's designed for astronomers, researchers, and anyone who needs to query astronomical databases efficiently from the terminal.
 
 *17 data sources. One command. Beautiful output. Multi-language support. Extensible for future services.*
 
@@ -38,8 +41,8 @@ Query data from 17 different astronomical databases and services:
 | [SDSS](https://www.sdss.org/) | Sloan Digital Sky Survey | `astrocli sdss` | - |
 | [ESO](https://www.eso.org/) | European Southern Observatory | `astrocli eso` | - |
 | [Splatalogue](https://www.splatalogue.org/) | Molecular line database | `astrocli splatalogue` | `astrocli spl` |
-| [**AAVSO VSX**](https://www.aavso.org/vsx/) | Variable Star Index | `astrocli aavso` | - |
-| [**Fermi-LAT**](https://fermi.gsfc.nasa.gov/) | Gamma-ray telescope data | `astrocli fermi` | - |
+| [**AAVSO VSX**](https://www.aavso.org/vsx/) | Variable Star Index | `astrocli aavso` | `astrocli aav` |
+| [**Fermi-LAT**](https://fermi.gsfc.nasa.gov/) | Gamma-ray telescope data | `astrocli fermi` | `astrocli fer` |
 
 ---
 
@@ -57,48 +60,48 @@ Query data from 17 different astronomical databases and services:
 
 ## 📦 Installation
 
-Astro CLI 提供多种安装方式，选择适合你的方式：
+Astro CLI offers multiple installation methods. Choose the one that suits you:
 
-### 方式一：npm 全局安装（推荐）
+### Method 1: npm Global Install (Recommended)
 
 ```bash
-# 全局安装（需要 Node.js ≥18 和 Python 3.11+）
+# Global install (requires Node.js ≥18 and Python 3.11+)
 npm install -g astroquery-cli
 
-# 安装后可使用以下任一命令：
-astroquery-cli --help    # 完整命令
-aqc --help               # 短命令
-astrocli --help          # 别名命令
+# After installation, all three commands are available:
+astroquery-cli --help    # Full command name
+aqc --help               # Short command (recommended)
+astrocli --help          # Alias command
 
-# 示例：查询 SIMBAD 中的 M31
+# Example: Query SIMBAD for M31
 astrocli simbad object "M31"
 ```
 
-### 方式二：npx/pnpm 直接运行
+### Method 2: npx/pnpm (No Install Required)
 
 ```bash
-# 使用 npx（无需安装）
+# Using npx (no installation needed)
 npx astroquery-cli --help
 
-# 使用 pnpm
+# Using pnpm
 pnpm astroquery-cli --help
 
-# 示例
+# Example
 npx astroquery-cli simbad object "M31"
 ```
 
-### 方式三：PyPI 安装（Python 用户）
+### Method 3: PyPI Install (For Python Users)
 
 ```bash
-# 从 PyPI 安装 Python 包
+# Install Python package from PyPI
 pip install aqc-cli
 
-# 安装后可使用命令：
+# After installation, available commands:
 aqc --help
 astrocli --help
 ```
 
-### 方式四：从源码安装
+### Method 4: Install from Source
 
 ```bash
 git clone https://github.com/inoribea/astroquery-cli.git
@@ -108,27 +111,27 @@ pip install -e .
 
 ---
 
-### 📋 包名说明
+### 📋 Package Naming
 
-| 平台 | 包名 | 安装命令 |
-|------|------|---------|
+| Platform | Package Name | Install Command |
+|----------|--------------|-----------------|
 | **npm** | `astroquery-cli` | `npm install -g astroquery-cli` |
 | **PyPI** | `aqc-cli` | `pip install aqc-cli` |
 
-安装后，三个命令均可使用：
-- `astroquery-cli` - 完整命令名
-- `aqc` - 短命令（推荐）
-- `astrocli` - 别名命令
+After installation, all three commands are available:
+- `astroquery-cli` - Full command name
+- `aqc` - Short command (recommended)
+- `astrocli` - Alias command
 
 ---
 
-### 环境变量
+### Environment Variables
 
-- `AC_PYTHON` - 指定 Python 解释器路径
-- `AC_VENV_DIR` - 自定义虚拟环境缓存目录（默认：`~/.cache/astrocli`）
-- `AC_FORCE_INSTALL=1` - 强制重新安装/升级 Python 依赖
-- `AC_DEBUG` - 启用调试模式
-- `AC_LANG` - 设置默认语言（en/zh/ja）
+- `AC_PYTHON` - Specify Python interpreter path
+- `AC_VENV_DIR` - Custom virtual environment cache directory (default: `~/.cache/astrocli`)
+- `AC_FORCE_INSTALL=1` - Force reinstall/upgrade Python dependencies
+- `AC_DEBUG` - Enable debug mode
+- `AC_LANG` - Set default language (en/zh/ja)
 
 ---
 
@@ -200,17 +203,20 @@ astrocli ads bibcode "2023A&A...555..959W"
 Change output language on-the-fly:
 
 ```bash
-astrocli --lang zh simbad object "M31"    # Chinese
-astrocli --lang ja simbad object "M31"    # Japanese
 astrocli --lang en simbad object "M31"    # English
+astrocli --lang zh simbad object "M31"    # Chinese (Simplified)
+astrocli --lang ja simbad object "M31"    # Japanese
+astrocli --lang fr simbad object "M31"    # French
 ```
+
+Supported languages: **English (en)**, **Chinese (zh)**, **Japanese (ja)**, **French (fr)**
 
 ---
 
 ## 🔧 Global Options
 
 | Option | Description |
-|---------|-------------|
+|--------|-------------|
 | `-l, --lang` | Set output language (en/zh/ja) |
 | `-p, --ping` | Test connectivity to all services (top-level only) |
 | `-f, --field` | Check available fields for a module (top-level only) |
@@ -272,22 +278,23 @@ astrocli --ping
 
 ```
 astrocli/
-├── astrocli/
+├── src/                    # Source code (renamed from astroquery_cli)
 │   ├── modules/           # Service-specific modules
 │   │   ├── simbad_cli.py
 │   │   ├── vizier_cli.py
-│   │   ├── aavso_cli.py      # NEW: AAVSO VSX
-│   │   ├── fermi_cli.py       # NEW: Fermi-LAT
+│   │   ├── aavso_cli.py      # AAVSO VSX
+│   │   ├── fermi_cli.py      # Fermi-LAT
 │   │   └── ...
 │   ├── utils.py            # Common utilities
 │   ├── common_options.py   # Shared CLI options
 │   ├── i18n.py            # Internationalization
 │   └── main.py            # CLI entry point
 ├── locales/                # Translation files
-│   ├── zh/LC_MESSAGES/
-│   ├── ja/LC_MESSAGES/
-│   └── en/LC_MESSAGES/
-├── package.json           # pnpm/npx configuration
+│   ├── en/LC_MESSAGES/     # English
+│   ├── zh/LC_MESSAGES/     # Chinese
+│   ├── ja/LC_MESSAGES/     # Japanese
+│   └── fr/LC_MESSAGES/     # French
+├── package.json           # npm/npx configuration
 ├── pyproject.toml         # Python package config
 └── README.md
 ```
@@ -316,22 +323,6 @@ This project uses [Astroquery](https://github.com/astropy/astroquery), which is 
 - [Rich](https://github.com/Textualize/rich) - Beautiful terminal output
 - [AAVSO](https://www.aavso.org/) - American Association of Variable Star Observers
 - [Fermi Team](https://fermi.gsfc.nasa.gov/) - Fermi Gamma-ray Space Telescope
-
----
-
-## 🔄 Migration from astroquery-cli
-
-If you were previously using `astroquery-cli`, simply change your command:
-
-```bash
-# Old command
-aqc simbad object "M31"
-
-# New command
-astrocli simbad object "M31"
-```
-
-All aliases remain the same: `sim` for `simbad`, `viz` for `vizier`, `spl` for `splatalogue`, etc.
 
 ---
 

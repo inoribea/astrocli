@@ -6,7 +6,7 @@ authors = ["inoribea <inoribea@outlook.com>"]
 license = "BSD-3-Clause"
 readme = "README.md"
 
-packages = [{include = "astroquery_cli"}]
+packages = [{include = "src"}]
 
 include = [{path = "locales/*/LC_MESSAGES/messages.mo"}]
 
@@ -32,8 +32,8 @@ Repository = "https://github.com/inoribea/astroquery-cli"
 Issues = "https://github.com/inoribea/astroquery-cli/issues"
 
 [tool.poetry.scripts]
-aqc = "astroquery_cli.main:cli"
-astrocli = "astroquery_cli.main:cli"
+aqc = "src.main:cli"
+astrocli = "src.main:cli"
 
 [build-system]
 requires = ["poetry-core"]
