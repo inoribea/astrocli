@@ -222,29 +222,30 @@ def setup_subcommands():
         ctx.obj["debug"] = debug
         ctx.obj["verbose"] = verbose or debug
 
-    # Enable debug manager
-    if debug:
-        debug_manager.enable_debug()
-    if verbose:
-        debug_manager.enable_verbose()
+        # Enable debug manager
+        if debug:
+            debug_manager.enable_debug()
+        if verbose:
+            debug_manager.enable_verbose()
 
-    if lang:
-        save_default_lang(lang)
-        debug_manager.verbose(f"Default language set to: {lang}")
+        if lang:
+            save_default_lang(lang)
+            debug_manager.verbose(f"Default language set to: {lang}")
 
-    config_lang = load_default_lang()
-    selected_lang = lang or config_lang or i18n.INITIAL_LANG
-    ctx.obj["lang"] = selected_lang
+        config_lang = load_default_lang()
+        selected_lang = lang or config_lang or i18n.INITIAL_LANG
+        ctx.obj["lang"] = selected_lang
 
-    # Print configuration information
-    config_info = {
-        "Debug Mode": debug,
-        "Verbose Mode": verbose or debug,
-        "Selected Language": selected_lang,
-        "Config Path": config.CONFIG_FILE_PATH,  # Use the correct config path from src.config
-        "Config File Exists": os.path.exists(config.CONFIG_FILE_PATH),
-        "Config Content": config_lang if config_lang else "None",
-    }
+        # Print configuration information
+        config_info = {
+            "Debug Mode": debug,
+            "Verbose Mode": verbose or debug,
+            "Selected Language": selected_lang,
+            "Config Path": config.CONFIG_FILE_PATH,  # Use the correct config path from src.config
+            "Config File Exists": os.path.exists(config.CONFIG_FILE_PATH),
+            "Config Content": config_lang if config_lang else "None",
+        }
+
     debug_manager.print_config_info(config_info)
     debug_manager.print_environment_info()
     debug_manager.print_system_info()
