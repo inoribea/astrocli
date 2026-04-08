@@ -1,6 +1,6 @@
 # Astro CLI 🚀
 
-**[中文文档](README_ZH.md)** | **English**
+**[English](README.md)** | **[中文](README_ZH.md)** | **[日本語](README_JA.md)** | **[Français](README_FR.md)**
 
 > Your gateway to cosmos — Query astronomical data from command line
 
@@ -13,7 +13,7 @@
 
 ## ✨ What is Astro CLI?
 
-**Astro CLI** is a modern command-line tool that provides quick access to multiple astronomical data services through the [Astroquery](https://astroquery.readthedocs.io/) library. It's designed for astronomers, researchers, and anyone who needs to query astronomical databases efficiently from the terminal.
+**Astro CLI** is a modern command-line tool that provides quick access to multiple astronomical data services. It integrates [Astroquery](https://astroquery.readthedocs.io/) and other data access methods (direct API calls, HTTP requests) to help astronomers, researchers, and anyone query astronomical databases efficiently from the terminal.
 
 *17 data sources. One command. Beautiful output. Multi-language support. Extensible for future services.*
 
@@ -312,39 +312,13 @@ astrocli/
 
 BSD 3-Clause License
 
-This project uses [Astroquery](https://github.com/astropy/astroquery), which is licensed under the BSD 3-Clause License.
-
 ---
 
 ## 🙏 Acknowledgments
 
-- [Astroquery](https://astroquery.readthedocs.io/) - Core library for astronomical data access
+- [aqc-mcp](https://github.com/inoribea/aqc-mcp) - MCP server for AI assistants
+- [Astroquery](https://astroquery.readthedocs.io/) - Astronomical data access library
 - [Typer](https://typer.tiangolo.com/) - Modern CLI framework
 - [Rich](https://github.com/Textualize/rich) - Beautiful terminal output
 - [AAVSO](https://www.aavso.org/) - American Association of Variable Star Observers
 - [Fermi Team](https://fermi.gsfc.nasa.gov/) - Fermi Gamma-ray Space Telescope
-
----
-
-## 📝 FAQ
-
-<details>
-<summary><b>Common Questions</b></summary>
-
-### Can I use this without Node.js?
-
-Yes! Install from source: `pip install -e .` or use Python directly after installing dependencies.
-
-### How do I add a new data service?
-
-See the [Development](#-development) section above. Most services in Astroquery can be wrapped with similar patterns.
-
-### Why do some modules say "not fully implemented"?
-
-Some advanced features or edge cases may not have full CLI coverage yet. Core query functionality works, but special parameters might need direct access to the underlying astroquery library.
-
-### What's the difference between this and astroquery?
-
-**Astro CLI** is a command-line interface for Astroquery. Think of it as a user-friendly wrapper that makes common tasks easier. It doesn't replace Astroquery — it enhances it!
-
-</details>
