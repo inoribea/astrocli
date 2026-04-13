@@ -20,6 +20,7 @@ from contextlib import redirect_stdout  # Import redirect_stdout
 import sys  # Import sys
 from src.common_options import setup_debug_context  # Import setup_debug_context
 from src.debug import debug  # Import debug function
+from src.utils import em
 
 
 def get_app():
@@ -143,7 +144,7 @@ def get_app():
             debug(f"query_object - object_name: {object_name}")
 
             console.print(
-                f"[cyan]{_('Querying ALMA for object: {object_name}').format(object_name=object_name)}[/cyan]"
+                f"[cyan]{_('Querying ALMA for object: {object_name}').format(object_name=em(str(object_name)))}[/cyan]"
             )
             query_payload = {"source_name_alma": object_name}
             if payload:
@@ -172,7 +173,7 @@ def get_app():
                     ctx,
                     result_table,
                     title=_("ALMA Data for {object_name}").format(
-                        object_name=object_name
+                        object_name=em(str(object_name))
                     ),
                     max_rows=max_rows_display,
                     show_all_columns=show_all_columns,
@@ -189,7 +190,7 @@ def get_app():
                 console.print(
                     _(
                         "[yellow]No information found for object '{object_name}'.[/yellow]"
-                    ).format(object_name=object_name)
+                    ).format(object_name=em(str(object_name)))
                 )
         except Exception as e:
             handle_astroquery_exception(ctx, e, _("ALMA object"))

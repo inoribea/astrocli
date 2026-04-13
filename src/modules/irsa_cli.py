@@ -23,6 +23,7 @@ from ..utils import (
 from ..i18n import get_translator
 from src.common_options import setup_debug_context  # Added for dust
 from src.debug import debug  # Added for dust
+from src.utils import em
 
 
 def get_app():
@@ -333,7 +334,7 @@ def get_app():
                 table.add_row(*row)
             Console().print(table)
         except Exception as e:
-            console.print(f"[red]Failed to fetch catalog list: {e}[/red]")
+            console.print(f"[red]Failed to fetch catalog list: {em(str(e))}[/red]")
 
     @app.command(
         name="region",
@@ -554,7 +555,7 @@ def get_app():
                     console.print(
                         _(
                             "[bold red]Invalid coordinates: {target_str}[/bold red]"
-                        ).format(target_str=target_str)
+                        ).format(target_str=em(str(target_str)))
                     )
                     raise typer.Exit(code=1)
                 coordinates_list.append(coord)
@@ -593,7 +594,7 @@ def get_app():
                         console.print(
                             _(
                                 "[yellow]Could not get extinction for '{target_name}': {error}[/yellow]"
-                            ).format(target_name=targets[i], error=e_single)
+                            ).format(target_name=targets[i], error=em(str(e_single)))
                         )
 
                 if not results:
@@ -693,7 +694,9 @@ def get_app():
             rad_quantity = u.Quantity(radius)
         except Exception as e:
             console.print(
-                _("[bold red]Error parsing input: {error}[/bold red]").format(error=e)
+                _("[bold red]Error parsing input: {error}[/bold red]").format(
+                    error=em(str(e))
+                )
             )
             raise typer.Exit(code=1)
 

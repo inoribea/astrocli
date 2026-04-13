@@ -237,7 +237,7 @@ def get_app():
                         console.print(
                             _(
                                 "[yellow]Error downloading {filename}: {error}[/yellow]"
-                            ).format(filename=filename, error=str(e))
+                            ).format(filename=filename, error=em(str(e)))
                         )
 
                 if downloaded_files:
@@ -288,7 +288,7 @@ def get_app():
             console.print(_("[green]Cache cleared successfully.[/green]"))
         except Exception as e:
             console.print(
-                _("[red]Error clearing cache: {error}[/red]").format(error=str(e))
+                _("[red]Error clearing cache: {error}[/red]").format(error=em(str(e)))
             )
             raise typer.Exit(code=1)
 

@@ -17,6 +17,7 @@ import re  # Import re
 from io import StringIO  # Import StringIO
 from contextlib import redirect_stdout  # Import redirect_stdout
 from src.common_options import setup_debug_context  # Import setup_debug_context
+from src.utils import em
 
 
 def get_app():

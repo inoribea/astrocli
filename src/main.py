@@ -68,6 +68,7 @@ i18n.init_translation(i18n.INITIAL_LANG)
 builtins._ = i18n._
 
 from src.debug import debug_manager
+from src.utils import em
 
 
 def save_default_lang(lang):
@@ -273,25 +274,25 @@ def setup_subcommands():
             def custom_gettext(message):
                 if debug:
                     console.print(
-                        f"[dim cyan]DEBUG: Click requesting translation for: '{message}'[/dim cyan]"
+                        f"[dim cyan]DEBUG: Click requesting translation for: '{em(str(message))}'[/dim cyan]"
                     )
 
                 translated = _(message)
 
                 if debug:
                     console.print(
-                        f"[dim cyan]DEBUG: Our translation result: '{translated}'[/dim cyan]"
+                        f"[dim cyan]DEBUG: Our translation result: '{em(str(translated))}'[/dim cyan]"
                     )
 
                 if translated != message:
                     if debug:
                         console.print(
-                            f"[dim green]DEBUG: Using our translation: '{translated}'[/dim green]"
+                            f"[dim green]DEBUG: Using our translation: '{em(str(translated))}'[/dim green]"
                         )
                     return translated
                 if debug:
                     console.print(
-                        f"[dim yellow]DEBUG: Using original message: '{message}'[/dim yellow]"
+                        f"[dim yellow]DEBUG: Using original message: '{em(str(message))}'[/dim yellow]"
                     )
                 return message
 
@@ -304,7 +305,7 @@ def setup_subcommands():
         except Exception as e:
             if debug:
                 console.print(
-                    f"[dim red]DEBUG: Failed to replace Click's gettext function: {e}[/dim red]"
+                    f"[dim red]DEBUG: Failed to replace Click's gettext function: {em(str(e))}[/dim red]"
                 )
 
         if ping:

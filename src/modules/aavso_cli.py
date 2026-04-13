@@ -18,6 +18,7 @@ from ..utils import (
     common_output_options,
     save_table_to_file,
     global_keyboard_interrupt_handler,
+    em,
 )
 from ..common_options import setup_debug_context
 from ..i18n import get_translator
@@ -140,10 +141,14 @@ def get_app():
                     _(
                         "[bold red]Error: HTTP {status_code} - {error}[/bold red]"
                     ).format(
-                        status_code=response.status_code,
-                        error=response.text[:200]
-                        if response.text
-                        else "No error message",
+                        status_code=em(str(response.status_code)),
+                        error=em(
+                            str(
+                                response.text[:200]
+                                if response.text
+                                else "No error message"
+                            )
+                        ),
                     )
                 )
                 raise typer.Exit(code=1)
@@ -279,7 +284,7 @@ def get_app():
             if response.status_code != 200:
                 console.print(
                     _("[bold red]Error: HTTP {status_code}[/bold red]").format(
-                        status_code=response.status_code
+                        status_code=em(str(response.status_code))
                     )
                 )
                 raise typer.Exit(code=1)
@@ -362,5 +367,5 @@ def parse_votable_xml(content: bytes) -> Optional[AstropyTable]:
         vo_table = parse_single_table(BytesIO(content))
         return vo_table.to_table()
     except Exception as e:
-        console.print(f"[yellow]Could not parse VOTable: {e}[/yellow]")
+        console.print(f"[yellow]Could not parse VOTable: {em(str(e))}[/yellow]")
         return None

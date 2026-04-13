@@ -8,6 +8,7 @@ import astropy.units as u
 from rich.console import Console
 from rich.table import Table as RichTable
 from rich.padding import Padding
+from rich.markup import escape
 import shutil
 import os
 import re
@@ -16,6 +17,16 @@ import src.i18n as i18n
 from pyvo.dal.tap import TAPResults  # Import TAPResults
 
 console = Console()
+
+
+def em(text: str) -> str:
+    """Escape Rich markup in dynamic text to prevent injection.
+
+    Use this whenever a variable (exception message, user input, etc.)
+    is interpolated into a Rich markup string. Without escaping, square
+    brackets in the variable content are interpreted as Rich tags.
+    """
+    return escape(text)
 
 
 def add_common_fields(ctx: typer.Context, simbad_instance):
@@ -46,9 +57,9 @@ def suggest_web_view(ctx: typer.Context, result_url: str, reason: str = ""):
         "Terminal too narrow or content too complex, please open in browser:"
     )
     if reason:
-        console.print(f"[cyan]{reason}[/cyan]")
+        console.print(f"[cyan]{em(str(reason))}[/cyan]")
     console.print(
-        f"[bold green]{suggestion}[/bold green]\n[blue underline]{result_url}[/blue underline]"
+        f"[bold green]{em(suggestion)}[/bold green]\n[blue underline]{em(result_url)}[/blue underline]"
     )
     try:
         import webbrowser
@@ -92,9 +103,9 @@ def parse_coordinates(ctx: typer.Context, coords_str: str) -> Optional[SkyCoord]
         return SkyCoord(coords_str, frame="icrs")
     except Exception as e1:
         console.print(
-            f"[bold red]Error: Could not parse coordinates '{coords_str}'.[/bold red]"
+            f"[bold red]Error: Could not parse coordinates '{em(coords_str)}'.[/bold red]"
         )
-        console.print(f"[yellow]Details: {e1}[/yellow]")
+        console.print(f"[yellow]Details: {em(str(e1))}[/yellow]")
         console.print(
             f"[yellow]Ensure format is recognized by Astropy (e.g., '10.68h +41.26d', '10d30m0s 20d0m0s', '150.0 2.0' for deg, or an object name like 'M31').[/yellow]"
         )
@@ -136,12 +147,12 @@ def parse_angle_str_to_quantity(ctx: typer.Context, angle_str: str) -> u.Quantit
                     return u.Quantity(value, unit)
                 else:
                     console.print(
-                        f"[bold red]Error: Invalid unit '{unit_str}' for an angle in '{original_str}'. Must be an angular unit.[/bold red]"
+                        f"[bold red]Error: Invalid unit '{em(unit_str)}' for an angle in '{em(original_str)}'. Must be an angular unit.[/bold red]"
                     )
                     raise typer.Exit(code=1)
             except ValueError:
                 console.print(
-                    f"[bold red]Error: Unknown unit '{unit_str}' in angle string '{original_str}'.[/bold red]"
+                    f"[bold red]Error: Unknown unit '{em(unit_str)}' in angle string '{em(original_str)}'.[/bold red]"
                 )
                 console.print(
                     f"[yellow]Use common units like 'deg', 'arcmin', 'arcsec'.[/yellow]"
@@ -154,12 +165,12 @@ def parse_angle_str_to_quantity(ctx: typer.Context, angle_str: str) -> u.Quantit
                     return q
                 else:
                     console.print(
-                        f"[bold red]Error: Value '{original_str}' parsed but is not an angle.[/bold red]"
+                        f"[bold red]Error: Value '{em(original_str)}' parsed but is not an angle.[/bold red]"
                     )
                     raise typer.Exit(code=1)
             except Exception:
                 console.print(
-                    f"[bold red]Error: Could not parse angle string '{original_str}'.[/bold red]"
+                    f"[bold red]Error: Could not parse angle string '{em(original_str)}'.[/bold red]"
                 )
                 console.print(
                     f"[yellow]Please provide a value and an angular unit (e.g., '10arcsec', '0.5 deg', '15 arcmin').[/yellow]"
@@ -168,7 +179,7 @@ def parse_angle_str_to_quantity(ctx: typer.Context, angle_str: str) -> u.Quantit
 
     except Exception as e:
         console.print(
-            f"[bold red]Error parsing angle string '{angle_str}': {e}[/bold red]"
+            f"[bold red]Error parsing angle string '{em(angle_str)}': {em(str(e))}[/bold red]"
         )
         raise typer.Exit(code=1)
 
@@ -189,12 +200,12 @@ def display_table(
             astro_table = astro_table.to_table()
         except Exception as e:
             console.print(
-                f"[bold red]Error converting TAPResults to AstropyTable: {e}[/bold red]"
+                f"[bold red]Error converting TAPResults to AstropyTable: {em(str(e))}[/bold red]"
             )
             # If conversion fails, we can't proceed with displaying as AstropyTable
             # A fallback could be to print raw TAPResults or exit
             console.print(
-                f"[yellow]Cannot display results. Raw TAPResults object: {astro_table}[/yellow]"
+                f"[yellow]Cannot display results. Raw TAPResults object: {em(str(astro_table))}[/yellow]"
             )
             return
 
@@ -205,7 +216,7 @@ def display_table(
         if not astro_table:
             console.print(
                 Padding(
-                    f"[yellow]No data returned for '{title if title else 'query'}'.[/yellow]",
+                    f"[yellow]No data returned for '{em(str(title if title else 'query'))}'.[/yellow]",
                     (0, 2),
                 )
             )
@@ -223,7 +234,7 @@ def display_table(
             astro_table = AstropyTable(rows=astro_table, names=headers)
         except Exception as e:
             console.print(
-                f"[bold red]Error converting list to AstropyTable: {e}[/bold red]"
+                f"[bold red]Error converting list to AstropyTable: {em(str(e))}[/bold red]"
             )
             # Fallback to just printing rows if conversion fails
             rich_table = RichTable(
@@ -246,7 +257,7 @@ def display_table(
     if astro_table is None or len(astro_table) == 0:
         console.print(
             Padding(
-                f"[yellow]No data returned for '{title if title else 'query'}'.[/yellow]",
+                f"[yellow]No data returned for '{em(str(title if title else 'query'))}'.[/yellow]",
                 (0, 2),
             )
         )
@@ -326,46 +337,45 @@ def display_table(
 
 def handle_astroquery_exception(ctx: typer.Context, e: Exception, service_name: str):
     lang = ctx.obj.get("lang", "en") if ctx.obj else "en"
-    console.print(f"[bold red]Error querying {service_name}:[/bold red]")
+    console.print(f"[bold red]Error querying {em(service_name)}:[/bold red]")
     import traceback
 
-    console.print(f"[yellow][debug] type(e): {type(e)}[/yellow]")
-    console.print(f"[yellow][debug] e: {e}[/yellow]")
-    console.print(f"[yellow][debug] ctx: {ctx}[/yellow]")
+    console.print(f"[yellow][debug] type(e): {em(str(type(e)))}[/yellow]")
+    console.print(f"[yellow][debug] e: {em(str(e))}[/yellow]")
+    console.print(f"[yellow][debug] ctx: {em(str(ctx))}[/yellow]")
     console.print(
-        f"[yellow][debug] ctx.params: {getattr(ctx, 'params', None)}[/yellow]"
+        f"[yellow][debug] ctx.params: {em(str(getattr(ctx, 'params', None)))}[/yellow]"
     )
     console.print(f"[yellow][debug] traceback:[/yellow]")
-    console.print("".join(traceback.format_exception(type(e), e, e.__traceback__)))
+    console.print(em("".join(traceback.format_exception(type(e), e, e.__traceback__))))
     try:
-        console.print(f"{type(e).__name__}: {e}")
+        console.print(f"{em(type(e).__name__)}: {em(str(e))}")
     except KeyError as ke:
         console.print(
-            f"[red]KeyError in error message: {ke}. Some translation or error string is missing a key.[/red]"
+            f"[red]KeyError in error message: {em(str(ke))}. Some translation or error string is missing a key.[/red]"
         )
-        console.print(f"[red]Original exception type: {type(e).__name__}[/red]")
-        console.print(f"[red]ctx.params: {getattr(ctx, 'params', None)}[/red]")
+        console.print(f"[red]Original exception type: {em(type(e).__name__)}[/red]")
+        console.print(f"[red]ctx.params: {em(str(getattr(ctx, 'params', None)))}[/red]")
         if hasattr(e, "__traceback__"):
             console.print("[red]Traceback:[/red]")
-            console.print("".join(traceback.format_tb(e.__traceback__)))
+            console.print(em("".join(traceback.format_tb(e.__traceback__))))
     except Exception as ee:
-        console.print(f"[red]Unexpected error in error handler: {ee}[/red]")
-        console.print(f"[red]ctx.params: {getattr(ctx, 'params', None)}[/red]")
-    # 打印异常链，便于定位隐藏的 format 错误
+        console.print(f"[red]Unexpected error in error handler: {em(str(ee))}[/red]")
+        console.print(f"[red]ctx.params: {em(str(getattr(ctx, 'params', None)))}[/red]")
     if hasattr(e, "__context__") and e.__context__:
         console.print(
-            f"[dim]Exception context: {type(e.__context__).__name__}: {e.__context__}[/dim]"
+            f"[dim]Exception context: {em(type(e.__context__).__name__)}: {em(str(e.__context__))}[/dim]"
         )
     if hasattr(e, "__cause__") and e.__cause__:
         console.print(
-            f"[dim]Exception cause: {type(e.__cause__).__name__}: {e.__cause__}[/dim]"
+            f"[dim]Exception cause: {em(type(e.__cause__).__name__)}: {em(str(e.__cause__))}[/dim]"
         )
     if hasattr(e, "response") and e.response is not None:
         try:
             content = e.response.text
             if "Error" in content or "Fail" in content or "ERROR" in content:
                 console.print(
-                    f"[italic]Server response details: {content[:500]}...[/italic]"
+                    f"[italic]Server response details: {em(content[:500])}...[/italic]"
                 )
         except Exception:
             pass
@@ -415,7 +425,7 @@ def save_table_to_file(
             )
 
     console.print(
-        f"[cyan]Saving {query_type} results to '{filename}' as {file_format}...[/cyan]"
+        f"[cyan]Saving {em(str(query_type))} results to '{em(str(filename))}' as {em(str(file_format))}...[/cyan]"
     )
     try:
         if file_format in ["pickle", "pkl"]:
@@ -428,12 +438,12 @@ def save_table_to_file(
         console.print(f"[green]Successfully saved to '{filename}'.[/green]")
     except Exception as e:
         console.print(
-            f"[bold red]Error saving table to '{filename}' (format: {file_format}): {e}[/bold red]"
+            f"[bold red]Error saving table to '{em(filename)}' (format: {em(file_format)}): {em(str(e))}[/bold red]"
         )
         if "No writer defined for format" in str(e) or "Unknown format" in str(e):
             available_formats = list(AstropyTable.write.formats.keys())
             console.print(
-                f"[yellow]Tip: Ensure the format '{file_format}' is supported by Astropy.[/yellow]"
+                f"[yellow]Tip: Ensure the format '{em(str(file_format))}' is supported by Astropy.[/yellow]"
             )
             console.print(
                 f"[yellow]Available astropy table write formats include: {', '.join(available_formats)}[/yellow]"

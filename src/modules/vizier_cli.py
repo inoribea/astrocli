@@ -17,6 +17,7 @@ from io import StringIO  # Import StringIO
 from contextlib import redirect_stdout  # Import redirect_stdout
 from src.common_options import setup_debug_context  # Import setup_debug_context
 from src.debug import debug  # Import debug function
+from src.utils import em
 
 
 def get_app():
@@ -110,7 +111,7 @@ def get_app():
             console.print(
                 _(
                     "[bold red]Error parsing angle string '{angle_str}': {error_message}[/bold red]"
-                ).format(angle_str=angle_str, error_message=e)
+                ).format(angle_str=angle_str, error_message=em(str(e)))
             )
             console.print(
                 _(
@@ -139,7 +140,7 @@ def get_app():
                 console.print(
                     _(
                         "[bold red]Error parsing coordinates '{coords_str}': {error_message}[/bold red]"
-                    ).format(coords_str=coords_str, error_message=e)
+                    ).format(coords_str=coords_str, error_message=em(str(e)))
                 )
                 console.print(
                     _(
@@ -671,7 +672,7 @@ def get_app():
                 else:
                     console.print(
                         _(
-                            f"[yellow]No data found in catalog '{table_name}' for the given criteria.[/yellow]"
+                            f"[yellow]No data found in catalog '{em(str(table_name))}' for the given criteria.[/yellow]"
                         )
                     )
 
@@ -796,7 +797,7 @@ def get_app():
                 else:
                     console.print(
                         _(
-                            f"[yellow]No data found in catalog '{table_name}' for the given criteria.[/yellow]"
+                            f"[yellow]No data found in catalog '{em(str(table_name))}' for the given criteria.[/yellow]"
                         )
                     )
 

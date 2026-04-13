@@ -25,6 +25,7 @@ from io import StringIO  # Import StringIO
 from contextlib import redirect_stdout  # Import redirect_stdout
 from src.common_options import setup_debug_context  # Import setup_debug_context
 from src.debug import debug  # Import debug function
+from src.utils import em
 
 
 def get_app():
@@ -176,12 +177,12 @@ def get_app():
             coords_obj = parse_coordinates(ctx, target)
             if coords_obj is None:
                 message = builtins._("Invalid coordinates provided.")
-                console.print(f"[bold red]{message}[/bold red]")
+                console.print(f"[bold red]{em(str(message))}[/bold red]")
                 raise typer.Exit(code=1)
             rad_quantity = parse_angle_str_to_quantity(ctx, radius)
             if rad_quantity is None:
                 message = builtins._("Invalid radius provided.")
-                console.print(f"[bold red]{message}[/bold red]")
+                console.print(f"[bold red]{em(str(message))}[/bold red]")
                 raise typer.Exit(code=1)
 
             query = f"""
@@ -317,151 +318,21 @@ def get_app():
                 Gaia.login(user=login_user, password=login_password)
             except Exception as e:
                 console.print(
-                    _("[bold red]Gaia login failed: {error}[/bold red]").format(error=e)
+                    _("[bold red]Gaia login failed: {error}[/bold red]").format(
+                        error=em(str(e))
+                    )
                 )
                 console.print(
                     _("[yellow]Proceeding with anonymous access if possible.[/yellow]")
                 )
         elif Gaia.authenticated():
-            debug(
-                _("Already logged into Gaia archive as '{user}'.").format(
-                    user=Gaia.credentials.username
-                    if Gaia.credentials
-                    else _("unknown user")
-                )
-            )
-        else:
-            debug(_("No Gaia login credentials provided. Using anonymous access."))
-
-        try:
-            coords_obj = parse_coordinates(ctx, target)
-            if coords_obj is None:
-                console.print(_("[bold red]Invalid coordinates provided.[/bold red]"))
-                raise typer.Exit(code=1)
-            rad_quantity = parse_angle_str_to_quantity(ctx, radius)
-            if rad_quantity is None:
-                console.print(_("[bold red]Invalid radius provided.[/bold red]"))
-                raise typer.Exit(code=1)
-
-            query = f"""
-            SELECT {", ".join(columns) if columns else "*"}
-            FROM {resolved_table_name}
-            WHERE 1=CONTAINS(POINT('ICRS', ra, dec), CIRCLE('ICRS', {coords_obj.ra.deg}, {coords_obj.dec.deg}, {rad_quantity.to(u.deg).value}))
-            LIMIT {row_limit}
-            """
-            debug(
-                _("Executing ADQL query (first {row_limit} rows):").format(
-                    row_limit=row_limit
-                )
-            )
-            debug(f"{query.strip()}")
-
-            job = Gaia.launch_job(query, dump_to_file=False)
-            result_table = job.get_results()
-
-            if result_table is not None and len(result_table) > 0:
-                title = _("Gaia Cone Search Results ({table_name})").format(
-                    table_name=resolved_table_name
-                )
-                if Gaia.authenticated() and Gaia.credentials:
-                    title += _(" (User: {user})").format(user=Gaia.credentials.username)
-                display_table(
-                    ctx,
-                    result_table,
-                    title=title,
-                    max_rows=max_rows_display,
-                    show_all_columns=show_all_columns,
-                )
-                if output_file:
-                    save_table_to_file(
-                        ctx,
-                        result_table,
-                        output_file,
-                        output_format,
-                        _("Gaia cone search"),
-                    )
-            else:
-                console.print(
-                    _(
-                        "[yellow]No results found from Gaia for this cone search.[/yellow]"
-                    )
-                )
-
-        except Exception as e:
-            handle_astroquery_exception(
-                ctx,
-                e,
-                _("Gaia cone search on {table_name}").format(
-                    table_name=resolved_table_name
-                ),
-            )
-            raise typer.Exit(code=1)
-        finally:
-            if login_user and Gaia.authenticated():
-                Gaia.logout()
-                debug(_("Logged out from Gaia archive."))
-
-        if test:
-            elapsed = time.perf_counter() - start
-            print(f"Elapsed: {elapsed:.3f} s")
-            raise typer.Exit()
-
-    @app.command(
-        name="adql-query", help=builtins._("Execute a raw ADQL query (synchronous).")
-    )
-    @global_keyboard_interrupt_handler
-    def adql_query(
-        ctx: typer.Context,
-        query: str = typer.Argument(..., help=builtins._("The ADQL query string.")),
-        output_file: Optional[str] = common_output_options["output_file"],
-        output_format: Optional[str] = common_output_options["output_format"],
-        max_rows_display: int = typer.Option(
-            20,
-            help=builtins._("Maximum number of rows to display. Use -1 for all rows."),
-        ),
-        show_all_columns: bool = typer.Option(
-            False,
-            "--show-all-cols",
-            help=builtins._("Show all columns in the output table."),
-        ),
-        login_user: Optional[str] = typer.Option(
-            None,
-            envvar="GAIA_USER",
-            help=builtins._("Gaia archive username (or set GAIA_USER env var)."),
-        ),
-        login_password: Optional[str] = typer.Option(
-            None,
-            envvar="GAIA_PASSWORD",
-            help=builtins._(
-                "Gaia archive password (or set GAIA_PASSWORD env var). Prompt if user set but no password."
-            ),
-            prompt=False,
-            hide_input=True,
-        ),
-        test: bool = typer.Option(
-            False,
-            "--test",
-            "-t",
-            help=builtins._("Enable test mode and print elapsed time."),
-        ),
-    ):
-        import time
-
-        start = time.perf_counter() if test else None
-
-        console.print(_("[cyan]Executing Gaia ADQL query...[/cyan]"))
-        debug(f"{query}")
-
-        if login_user and not login_password:
-            login_password = typer.prompt(_("Gaia archive password"), hide_input=True)
-
-        if login_user and login_password:
-            debug(_("Logging into Gaia archive as '{user}'...").format(user=login_user))
             try:
                 Gaia.login(user=login_user, password=login_password)
             except Exception as e:
                 console.print(
-                    _("[bold red]Gaia login failed: {error}[/bold red]").format(error=e)
+                    _("[bold red]Gaia login failed: {error}[/bold red]").format(
+                        error=em(str(e))
+                    )
                 )
                 console.print(
                     _("[yellow]Proceeding with anonymous access if possible.[/yellow]")
@@ -511,7 +382,7 @@ def get_app():
                 console.print(
                     _(
                         "[bold red]ADQL Query Error Details from server:\n{error_details}[/bold red]"
-                    ).format(error_details=str(e))
+                    ).format(error_details=em(str(e)))
                 )
             raise typer.Exit(code=1)
         finally:

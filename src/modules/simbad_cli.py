@@ -6,6 +6,7 @@ from astropy.table import Table
 from rich.console import Console
 from src.utils import display_table, handle_astroquery_exception, common_output_options, save_table_to_file, add_common_fields, console
 from src.common_options import setup_debug_context
+from src.utils import em
 from ..i18n import get_translator
 from ..utils import global_keyboard_interrupt_handler
 import re # Import re
@@ -99,7 +100,7 @@ def get_app():
         Example: aqc simbad query-object "HD 1*" --wildcard --add-field sptype
         """
 
-        console.print(_("[cyan]Querying SIMBAD for object: '{object_name}'...[/cyan]").format(object_name=object_name))
+        console.print(_("[cyan]Querying SIMBAD for object: '{object_name}'...[/cyan]").format(object_name=em(str(object_name))))
         s = Simbad()
         if include_common_fields:
             add_common_fields(ctx, s)
@@ -115,11 +116,11 @@ def get_app():
 
             if result_table:
                 console.print(_("[green]Found {count} match(es) for '{object_name}'.[/green]").format(count=len(result_table), object_name=object_name))
-                display_table(ctx, result_table, title=_("SIMBAD Data for {object_name}").format(object_name=object_name), max_rows=max_rows_display, show_all_columns=show_all_columns)
+                display_table(ctx, result_table, title=_("SIMBAD Data for {object_name}").format(object_name=em(str(object_name))), max_rows=max_rows_display, show_all_columns=show_all_columns)
                 if output_file:
                     save_table_to_file(ctx, result_table, output_file, output_format, _("SIMBAD object query"))
             else:
-                console.print(_("[yellow]No information found for object '{object_name}'.[/yellow]").format(object_name=object_name))
+                console.print(_("[yellow]No information found for object '{object_name}'.[/yellow]").format(object_name=em(str(object_name))))
 
         except Exception as e:
             handle_astroquery_exception(ctx, e, _("SIMBAD object"))
@@ -138,16 +139,16 @@ def get_app():
         Retrieves all known identifiers for a given astronomical object.
         Example: aqc simbad query-ids M51
         """
-        console.print(_("[cyan]Querying SIMBAD for identifiers of: '{object_name}'...[/cyan]").format(object_name=object_name))
+        console.print(_("[cyan]Querying SIMBAD for identifiers of: '{object_name}'...[/cyan]").format(object_name=em(str(object_name))))
         s = Simbad()
         try:
             result_table: Optional[Table] = s.query_objectids(object_name)
             if result_table:
-                display_table(ctx, result_table, title=_("SIMBAD Identifiers for {object_name}").format(object_name=object_name), max_rows=max_rows_display)
+                display_table(ctx, result_table, title=_("SIMBAD Identifiers for {object_name}").format(object_name=em(str(object_name))), max_rows=max_rows_display)
                 if output_file:
                     save_table_to_file(ctx, result_table, output_file, output_format, _("SIMBAD ID query"))
             else:
-                console.print(_("[yellow]No identifiers found for object '{object_name}'.[/yellow]").format(object_name=object_name))
+                console.print(_("[yellow]No identifiers found for object '{object_name}'.[/yellow]").format(object_name=em(str(object_name))))
         except Exception as e:
             handle_astroquery_exception(ctx, e, _("SIMBAD ids"))
             raise typer.Exit(code=1)

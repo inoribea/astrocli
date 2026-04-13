@@ -17,6 +17,7 @@ from io import StringIO
 from contextlib import redirect_stdout
 from src.common_options import setup_debug_context
 from src.debug import debug
+from src.utils import em
 
 def get_app(_: callable):
     app = typer.Typer(
