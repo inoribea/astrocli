@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "inoribea-astrocli"
-version = "1.4.6"
+version = "1.4.7"
 description = "CLI for astroquery modules with autocompletion and multi-language support."
 authors = ["inoribea <inoribea@outlook.com>"]
 license = "BSD-3-Clause"
